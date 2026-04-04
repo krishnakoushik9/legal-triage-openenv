@@ -5,3 +5,10 @@ numpy
 openai
 python-dotenv
 jinja2
+<<<<<<< HEAD
+=======
+httpx
+python-multipart
+anyio
+requests
+>>>>>>> 91f159c (Fix POST /reset, Dockerfile, openenv.yaml, inference.py for validator)
