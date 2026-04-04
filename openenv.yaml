@@ -1,0 +1,28 @@
+name: legal-triage-openenv
+version: "1.0.0"
+description: "OpenEnv environment for autonomous legal triage and resolution"
+author: "krsna"
+tags:
+  - openenv
+  - legal
+  - nlp
+  - real-world
+entrypoint: app.env:LegalEnv
+endpoints:
+  reset: /reset
+  step: /step
+  state: /state
+observation_space: "Legal case file with facts, jurisdiction, and context"
+action_space: "Structured legal action with reasoning chain"
+reward_range: [0.0, 1.0]
+
+tasks:
+  - name: legal_classification
+    difficulty: easy
+    description: "Classify a legal case into the correct category"
+  - name: legal_retrieval
+    difficulty: medium  
+    description: "Retrieve the most relevant statute or precedent for a case"
+  - name: legal_resolution
+    difficulty: hard
+    description: "Produce a full structured resolution recommendation"
