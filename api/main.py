@@ -67,7 +67,7 @@ def step(action: Dict[str, Any]):
 def get_state():
     """Returns the current environment state without advancing the episode."""
     try:
-        return env.state()
+        return env._get_observation()
     except Exception as e:
         logging.error(f"Error in /state: {e}")
         raise HTTPException(status_code=500, detail="Internal environment error")

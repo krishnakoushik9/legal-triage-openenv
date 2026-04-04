@@ -19,11 +19,11 @@ TASKS = ["legal_classification", "legal_retrieval", "legal_resolution"]
 
 def run_episode(task_name):
     # 5. [START] line
-    print(f"[START] task={task_name} env=legal_triage model={MODEL_NAME}", flush=True)
+    print(f"[START] task={task_name} env=legal-triage-openenv model={MODEL_NAME}", flush=True)
     
     rewards = []
     steps_taken = 0
-    score = 0.0
+    final_score = 0.0
     
     try:
         # 3. Connect via HTTP - Reset
@@ -46,7 +46,8 @@ def run_episode(task_name):
                 llm_response = (completion.choices[0].message.content or "").strip()
                 
                 # 9. Send action to /step
-                action = {"action_type": "final_answer", "content": llm_response}
+                action_type = "final_answer"
+                action = {"action_type": action_type, "content": llm_response}
                 step_resp = requests.post(f"{SPACE_URL}/step", json=action)
                 step_resp.raise_for_status()
                 step_data = step_resp.json()
@@ -54,16 +55,16 @@ def run_episode(task_name):
                 observation = step_data["observation"]
                 reward = step_data.get("reward", 0.0)
                 done = step_data.get("done", False)
+                info = step_data.get("info", {})
                 
                 rewards.append(reward)
-                score = reward # 10. Score = final reward from the last step
+                if done:
+                    final_score = info.get("score", reward)
                 
                 # 5 & 6. [STEP] formatting
                 done_str = "true" if done else "false"
-                # Replace newlines in action for log single-line consistency
-                action_clean = llm_response.replace("\n", " ").replace("\r", "")
                 
-                print(f"[STEP] step={step_idx} action={action_clean} reward={reward:.2f} done={done_str} error=null", flush=True)
+                print(f"[STEP] step={step_idx} action={action_type} reward={reward:.2f} done={done_str} error=null", flush=True)
                 
                 if done:
                     break
@@ -79,12 +80,12 @@ def run_episode(task_name):
         print(f"Episode Error: {error_msg}", file=sys.stderr)
     finally:
         # 10. Success criteria
-        success = score >= 0.1
+        success = final_score >= 0.5
         success_str = "true" if success else "false"
         
         # 6. [END] formatting
         rewards_formatted = ",".join(f"{r:.2f}" for r in rewards)
-        print(f"[END] success={success_str} steps={steps_taken} score={score:.3f} rewards={rewards_formatted}", flush=True)
+        print(f"[END] success={success_str} steps={steps_taken} score={final_score:.3f} rewards={rewards_formatted}", flush=True)
 
 def main():
     # 4. Run ALL 3 tasks sequentially

@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "legal-triage-openenv"
+version = "1.0.0"
+description = "OpenEnv environment for autonomous legal triage and resolution"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "krsna" }
+]
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "numpy",
+    "openai",
+    "python-dotenv",
+    "jinja2",
+    "httpx",
+    "python-multipart",
+    "anyio",
+    "requests",
+    "openenv-core"
+]
+
+[project.scripts]
+server = "server.app:main"
+
+[tool.setuptools]
+packages = ["app", "api"]
