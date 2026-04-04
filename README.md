@@ -1,3 +1,23 @@
+---
+title: Legal Triage OpenEnv
+emoji: ⚖️
+colorFrom: blue
+colorTo: green
+sdk: docker
+pinned: false
+license: mit
+---
+
+---
+title: Legal Triage OpenEnv
+emoji: ⚖️
+colorFrom: blue
+colorTo: green
+sdk: docker
+pinned: false
+license: mit
+---
+
 # Legal Triage OpenEnv
 
 ## Environment Description
