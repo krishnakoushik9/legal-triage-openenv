@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Triage Agent Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Legal Triage Agent</h1>
+        <div id="observation-container">
+            <h3>Observation</h3>
+            <pre id="observation-display">Press Reset to Start</pre>
+        </div>
+        <div id="controls">
+            <button id="reset-btn">Reset Environment</button>
+            <div class="action-inputs">
+                <select id="action-type">
+                    <option value="classify">Classify</option>
+                    <option value="retrieve_doc">Retrieve Doc</option>
+                    <option value="draft_response">Draft Response</option>
+                    <option value="escalate">Escalate</option>
+                    <option value="final_answer">Final Answer</option>
+                </select>
+                <input type="text" id="action-content" placeholder="Action content...">
+                <button id="step-btn">Step</button>
+            </div>
+        </div>
+        <div id="reward-container">
+            <h3>Last Reward: <span id="reward-display">0</span></h3>
+            <h3>History</h3>
+            <ul id="history-list"></ul>
+        </div>
+    </div>
+    <script src="app.ts"></script>
+</body>
+</html>
