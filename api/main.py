@@ -37,7 +37,7 @@ def read_root():
 def health():
     return {"status": "ok", "environment": "legal-triage-openenv"}
 
-@app.get("/reset")
+@app.post("/reset")
 def reset(task_id: str = None):
     try:
         obs = env.reset(task_id=task_id)
