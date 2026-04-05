@@ -9,12 +9,21 @@
 <body>
     <div class="container">
         <h1>Legal Triage Agent</h1>
+        
+        <div id="token-container">
+            <h3>HF Token Configuration</h3>
+            <input type="password" id="hf-token" placeholder="hf_...">
+            <button id="save-token-btn">Save Token</button>
+        </div>
+
         <div id="observation-container">
             <h3>Observation</h3>
             <pre id="observation-display">Press Reset to Start</pre>
         </div>
+        
         <div id="controls">
             <button id="reset-btn">Reset Environment</button>
+            <button id="auto-run-btn">Run Automated Inference</button>
             <div class="action-inputs">
                 <select id="action-type">
                     <option value="classify">Classify</option>
@@ -27,6 +36,11 @@
                 <button id="step-btn">Step</button>
             </div>
         </div>
+        
+        <div id="status">
+            <h3>Status: <span id="status-display">Idle</span></h3>
+        </div>
+
         <div id="reward-container">
             <h3>Last Reward: <span id="reward-display">0</span></h3>
             <h3>History</h3>
