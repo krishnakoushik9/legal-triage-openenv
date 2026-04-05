@@ -2,7 +2,7 @@ import os
 import logging
 import json
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.env import LegalEnv
@@ -144,3 +144,6 @@ async def auto_step():
 
 # Serve frontend from root
 app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
+x.html")
+
+app.mount("/", StaticFiles(directory="frontend"), name="frontend")
