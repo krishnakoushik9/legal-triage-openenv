@@ -10,13 +10,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const rewardDisplay = document.getElementById('reward-display');
     const historyList = document.getElementById('history-list');
     const hfTokenInput = document.getElementById('hf-token');
+    const loadingOverlay = document.getElementById('loading-overlay');
     
+    function showLoading() { if (loadingOverlay) loadingOverlay.style.display = 'flex'; }
+    function hideLoading() { if (loadingOverlay) loadingOverlay.style.display = 'none'; }
+
     async function saveToken() {
         const token = hfTokenInput.value;
         if (!token) {
             alert("INPUT REQUIRED // TOKEN EMPTY");
             return;
         }
+        showLoading();
         try {
             const res = await fetch('/token', {
                 method: 'POST',
@@ -31,12 +36,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (e) {
             console.error("TOKEN ERROR:", e);
+        } finally {
+            hideLoading();
         }
     }
 
     async function resetEnv() {
         console.log("RESETTING ENVIRONMENT...");
         statusDisplay.textContent = "INITIALIZING...";
+        showLoading();
         try {
             const res = await fetch('/reset', { method: 'POST' });
             if (!res.ok) throw new Error("Reset failed");
@@ -47,6 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) {
             console.error("RESET ERROR:", e);
             statusDisplay.textContent = "RESET ERROR";
+        } finally {
+            hideLoading();
         }
     }
 
@@ -55,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const actionContent = document.getElementById('action-content').value;
         console.log(`EXECUTING: ${actionType}`);
 
+        showLoading();
         try {
             const res = await fetch('/step', {
                 method: 'POST',
@@ -71,6 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
             updateUI(data.observation, data.reward, data.done, data.observation.history);
         } catch (e) {
             console.error("STEP ERROR:", e);
+        } finally {
+            hideLoading();
         }
     }
 
@@ -80,7 +93,10 @@ document.addEventListener('DOMContentLoaded', () => {
         statusDisplay.textContent = "AGENT ACTIVE";
         
         try {
-            await resetEnv();
+            // No full-screen loading for auto-inference loop to keep it visible,
+            // but we can flash it on the very first reset.
+            await resetEnv(); 
+            
             let done = false;
             let stepCount = 0;
             const maxSteps = 8;
