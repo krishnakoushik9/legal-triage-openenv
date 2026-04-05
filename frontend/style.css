@@ -113,6 +113,7 @@ nav {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 40px; /* Pushed down from central alignment */
 }
 
 .rotate-text {
