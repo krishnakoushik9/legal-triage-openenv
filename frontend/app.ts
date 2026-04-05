@@ -1,8 +1,10 @@
 let currentObs: any = null;
 let isRunning = false;
+let totalReward = 0;
 
 async function saveToken() {
-    const token = (document.getElementById('hf-token') as HTMLInputElement).value;
+    const tokenInput = document.getElementById('hf-token') as HTMLInputElement;
+    const token = tokenInput.value;
     if (!token) {
         alert("Please enter a token");
         return;
@@ -13,17 +15,19 @@ async function saveToken() {
         body: JSON.stringify({ token })
     });
     if (res.ok) {
-        alert("Token saved successfully!");
+        tokenInput.value = '';
+        alert("TOKEN SECURED // ACCESS GRANTED");
     } else {
-        alert("Failed to save token");
+        alert("TOKEN REJECTED");
     }
 }
 
 async function resetEnv() {
     const res = await fetch('/reset', { method: 'POST' });
     currentObs = await res.json();
+    totalReward = 0;
     updateUI(currentObs, 0, false, []);
-    document.getElementById('status-display')!.textContent = "Ready";
+    document.getElementById('status-display')!.textContent = "READY";
 }
 
 async function stepEnv() {
@@ -41,13 +45,14 @@ async function stepEnv() {
 
     const data = await res.json();
     currentObs = data.observation;
+    totalReward += data.reward;
     updateUI(data.observation, data.reward, data.done, data.observation.history);
 }
 
 async function runAutoInference() {
     if (isRunning) return;
     isRunning = true;
-    document.getElementById('status-display')!.textContent = "Running Automated Inference...";
+    document.getElementById('status-display')!.textContent = "AGENT ACTIVE";
     
     try {
         await resetEnv();
@@ -57,18 +62,8 @@ async function runAutoInference() {
 
         while (!done && stepCount < maxSteps) {
             stepCount++;
-            document.getElementById('status-display')!.textContent = `Running Step ${stepCount}...`;
+            document.getElementById('status-display')!.textContent = `STEP ${stepCount} // EXECUTING`;
 
-            // We'll use a simplified version of the logic from inference.py but via client-side fetch 
-            // to a helper if we had one, but since we don't want to expose keys, we'll 
-            // actually just mock the call or assume the server handles it? 
-            // Actually, the server doesn't have an 'auto-step' endpoint.
-            // Let's implement a small proxy in the backend or just use a mock action for visualization
-            // since this is a "demo" frontend.
-            
-            // To make it REAL, we'd need the browser to call HF API or our backend to do it.
-            // Let's add a /auto-step to api/main.py that uses the saved token.
-            
             const res = await fetch('/auto-step', { method: 'POST' });
             if (!res.ok) {
                 const err = await res.json();
@@ -76,35 +71,47 @@ async function runAutoInference() {
             }
             const data = await res.json();
             currentObs = data.observation;
+            totalReward += data.reward;
             done = data.done;
             updateUI(data.observation, data.reward, data.done, data.observation.history);
             
             if (done) break;
-            await new Promise(r => setTimeout(r, 1000)); // Delay for visualization
+            await new Promise(r => setTimeout(r, 1500)); 
         }
-        document.getElementById('status-display')!.textContent = "Finished";
+        document.getElementById('status-display')!.textContent = "MISSION COMPLETE";
     } catch (e: any) {
-        alert("Error: " + e.message);
-        document.getElementById('status-display')!.textContent = "Error";
+        console.error(e);
+        document.getElementById('status-display')!.textContent = "SYSTEM ERROR";
     } finally {
         isRunning = false;
     }
 }
 
-function updateUI(obs: any, reward: number, done: boolean, history: string[]) {
+function updateUI(obs: any, lastReward: number, done: boolean, history: string[]) {
     document.getElementById('observation-display')!.textContent = JSON.stringify(obs, null, 2);
-    document.getElementById('reward-display')!.textContent = reward.toFixed(2);
+    document.getElementById('reward-display')!.textContent = totalReward.toFixed(2);
     
     const historyList = document.getElementById('history-list')!;
     historyList.innerHTML = '';
-    history.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        historyList.appendChild(li);
+    
+    history.forEach((item, index) => {
+        const [type, ...contentParts] = item.split(': ');
+        const content = contentParts.join(': ');
+        
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'history-item';
+        itemDiv.innerHTML = `
+            <div class="history-index">${(index + 1).toString().padStart(2, '0')}</div>
+            <div class="history-content">
+                <div class="history-type">${type}</div>
+                <div class="history-text">${content}</div>
+            </div>
+        `;
+        historyList.appendChild(itemDiv);
     });
 
     if (done) {
-        document.getElementById('status-display')!.textContent = "Episode Done";
+        document.getElementById('status-display')!.textContent = "EPISODE TERMINATED";
     }
 }
 

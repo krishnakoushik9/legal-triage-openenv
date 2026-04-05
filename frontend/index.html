@@ -3,50 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legal Triage Agent Demo</title>
+    <title>LEGAL TRIAGE // OPENENV</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Legal Triage Agent</h1>
-        
-        <div id="token-container">
-            <h3>HF Token Configuration</h3>
-            <input type="password" id="hf-token" placeholder="hf_...">
-            <button id="save-token-btn">Save Token</button>
+    <nav>
+        <div class="nav-pill">
+            <a href="#" class="mono">Environment</a>
+            <a href="#" class="mono">Tasks</a>
+            <a href="#" class="mono">History</a>
+            <a href="https://github.com/krishnakoushik9/legal-triage-openenv" class="mono" target="_blank">GitHub</a>
         </div>
+    </nav>
 
-        <div id="observation-container">
-            <h3>Observation</h3>
-            <pre id="observation-display">Press Reset to Start</pre>
-        </div>
-        
-        <div id="controls">
-            <button id="reset-btn">Reset Environment</button>
-            <button id="auto-run-btn">Run Automated Inference</button>
-            <div class="action-inputs">
-                <select id="action-type">
-                    <option value="classify">Classify</option>
-                    <option value="retrieve_doc">Retrieve Doc</option>
-                    <option value="draft_response">Draft Response</option>
-                    <option value="escalate">Escalate</option>
-                    <option value="final_answer">Final Answer</option>
-                </select>
-                <input type="text" id="action-content" placeholder="Action content...">
-                <button id="step-btn">Step</button>
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>LEGAL<br>TRIAGE</h1>
+            <div class="hero-meta">
+                <div class="mono">Based in OpenEnv v1.0</div>
+                <div class="rotate-container">
+                    <svg class="rotate-text" viewBox="0 0 100 100">
+                        <path id="circlePath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="transparent"/>
+                        <text font-family="Space Mono" font-size="8" font-weight="bold">
+                            <textPath xlink:href="#circlePath">
+                                SCROLL DOWN • SCROLL DOWN • SCROLL DOWN • 
+                            </textPath>
+                        </text>
+                    </svg>
+                    <div class="rotate-center">↓</div>
+                </div>
+                <div class="mono text-right">Autonomous Legal<br>Reasoning System</div>
             </div>
-        </div>
-        
-        <div id="status">
-            <h3>Status: <span id="status-display">Idle</span></h3>
-        </div>
+        </section>
 
-        <div id="reward-container">
-            <h3>Last Reward: <span id="reward-display">0</span></h3>
-            <h3>History</h3>
-            <ul id="history-list"></ul>
-        </div>
-    </div>
+        <!-- Marquee Section -->
+        <section class="marquee-section">
+            <div class="marquee-row">
+                <div class="marquee-content">
+                    <span class="orange-text">REAL-WORLD LEGAL DATA •</span>
+                    <span class="orange-text">AUTONOMOUS AGENTS •</span>
+                    <span class="orange-text">OPENENV COMPLIANT •</span>
+                    <span class="orange-text">REAL-WORLD LEGAL DATA •</span>
+                    <span class="orange-text">AUTONOMOUS AGENTS •</span>
+                    <span class="orange-text">OPENENV COMPLIANT •</span>
+                </div>
+            </div>
+            <div class="marquee-row reverse">
+                <div class="marquee-content">
+                    <span class="white-text">DENSE REWARD SIGNALS •</span>
+                    <span class="white-text">DETERMINISTIC GRADERS •</span>
+                    <span class="white-text">QWEN2.5 POWERED •</span>
+                    <span class="white-text">DENSE REWARD SIGNALS •</span>
+                    <span class="white-text">DETERMINISTIC GRADERS •</span>
+                    <span class="white-text">QWEN2.5 POWERED •</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Control Panel -->
+        <section class="panel">
+            <div class="grid">
+                <!-- Config Card -->
+                <div class="card">
+                    <h3>Configuration</h3>
+                    <div id="token-container">
+                        <label class="mono" style="display:block; margin-bottom:10px;">HF_TOKEN</label>
+                        <input type="password" id="hf-token" placeholder="hf_...">
+                        <button id="save-token-btn">Save Token</button>
+                    </div>
+                    <div style="margin-top: 40px;">
+                        <label class="mono" style="display:block; margin-bottom:10px;">Status</label>
+                        <div id="status-display" class="archivo" style="font-size: 2rem;">Idle</div>
+                    </div>
+                </div>
+
+                <!-- Manual Actions Card -->
+                <div class="card">
+                    <h3>Manual Control</h3>
+                    <button id="reset-btn" style="margin-bottom: 20px;">Reset Env</button>
+                    <div class="action-inputs">
+                        <select id="action-type">
+                            <option value="classify">Classify</option>
+                            <option value="retrieve_doc">Retrieve Doc</option>
+                            <option value="draft_response">Draft Response</option>
+                            <option value="escalate">Escalate</option>
+                            <option value="final_answer">Final Answer</option>
+                        </select>
+                        <input type="text" id="action-content" placeholder="Action content...">
+                        <button id="step-btn">Execute Step</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Observation Block -->
+            <div style="margin-top: 40px;">
+                <h3 class="mono">Current Observation</h3>
+                <pre id="observation-display">// Awaiting initialization...</pre>
+            </div>
+        </section>
+
+        <!-- Automation Section -->
+        <section class="panel" style="background: var(--solid-black); color: var(--pure-white);">
+            <div style="text-align: center;">
+                <h2 style="font-size: 8vw; color: var(--brand-orange);">Autonomous Run</h2>
+                <p class="mono" style="margin-bottom: 40px;">Execute a full episode using the Qwen-72B agent</p>
+                <button id="auto-run-btn" class="round-btn" style="margin: 0 auto;">Start Agent</button>
+            </div>
+        </section>
+
+        <!-- History Section -->
+        <section class="history-section">
+            <h2 class="archivo" style="font-size: 6vw; margin-bottom: 40px;">Action History</h2>
+            <div style="margin-bottom: 20px;">
+                <span class="mono">Total Reward: </span>
+                <span id="reward-display" class="archivo" style="font-size: 3rem; color: var(--brand-orange);">0.00</span>
+            </div>
+            <div id="history-list">
+                <!-- Items will be injected here -->
+            </div>
+        </section>
+
+        <!-- Giant CTA Footer -->
+        <section class="cta-footer">
+            <h2>BUILD ON<br>OPENENV</h2>
+            <div class="mono" style="margin-bottom: 40px;">© 2024 Legal Triage Environment // MIT LICENSE</div>
+            <div style="display: flex; justify-content: center; gap: 40px;">
+                <a href="https://github.com/krishnakoushik9/legal-triage-openenv" class="mono" style="color: black; text-decoration: none;">GitHub</a>
+                <a href="#" class="mono" style="color: black; text-decoration: none;">Documentation</a>
+                <a href="#" class="mono" style="color: black; text-decoration: none;">Discord</a>
+            </div>
+        </section>
+    </main>
+
     <script src="app.ts"></script>
 </body>
 </html>
