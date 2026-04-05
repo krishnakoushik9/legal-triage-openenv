@@ -138,10 +138,15 @@
 
         <!-- History Section -->
         <section class="history-section">
-            <h2 class="archivo" style="font-size: 6vw; margin-bottom: 40px;">Action History</h2>
-            <div style="margin-bottom: 20px;">
-                <span class="mono">Total Reward: </span>
-                <span id="reward-display" class="archivo" style="font-size: 3rem; color: var(--brand-orange);">0.00</span>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px;">
+                <div>
+                    <h2 class="archivo" style="font-size: 6vw;">Action History</h2>
+                    <div style="margin-top: 10px;">
+                        <span class="mono">Total Reward: </span>
+                        <span id="reward-display" class="archivo" style="font-size: 3rem; color: var(--brand-orange);">0.00</span>
+                    </div>
+                </div>
+                <button id="download-report-btn" class="mono" style="width: auto; padding: 10px 20px; font-size: 12px; display: none; background: var(--brand-orange); color: var(--solid-black); border-radius: 9999px;">Download Report</button>
             </div>
             <div id="history-list">
                 <!-- Items will be injected here -->
@@ -160,6 +165,7 @@
         </section>
     </main>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="app.js?v=1.0.1"></script>
 </body>
 </html>
