@@ -142,8 +142,9 @@ async def auto_step():
         logging.error(f"Auto-step error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# Serve frontend from root
-app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
-x.html")
+# Serve frontend from root - MUST BE LAST
+@app.get("/")
+async def serve_index():
+    return FileResponse("frontend/index.html")
 
 app.mount("/", StaticFiles(directory="frontend"), name="frontend")
