@@ -9,3 +9,4 @@ httpx
 python-multipart
 anyio
 requests
+openenv-core

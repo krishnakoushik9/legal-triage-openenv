@@ -11,8 +11,13 @@ API_KEY = os.getenv("HF_TOKEN") or os.getenv("API_KEY")
 LOCAL_IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")
 SPACE_URL = os.getenv("SPACE_URL", "http://localhost:7860")
 
-# 2. OpenAI client
-client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
+# 2. OpenAI client initialized lazily
+def get_client():
+    if not API_KEY:
+        # In some environments, the key might be missing but we still want the script to start
+        # and only fail if the actual API call is made.
+        print("Warning: HF_TOKEN/API_KEY is missing. API calls will likely fail.", file=sys.stderr)
+    return OpenAI(base_url=API_BASE_URL, api_key=API_KEY or "not-set")
 
 MAX_STEPS = 8
 TASKS = ["legal_classification", "legal_retrieval", "legal_resolution"]
@@ -24,6 +29,7 @@ def run_episode(task_name):
     rewards = []
     steps_taken = 0
     final_score = 0.0
+    client = get_client()
     
     try:
         # 3. Connect via HTTP - Reset
