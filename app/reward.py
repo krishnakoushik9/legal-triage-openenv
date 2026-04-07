@@ -36,4 +36,4 @@ class RewardShaper:
         # The prompt says: "Clamp final reward to [0.0, 1.0] always" 
         # I'll clamp the step reward so it doesn't cause total to go wild, but let's just clamp the returned step reward to [0.0, 1.0] as instructed literally, although typically step rewards can be negative.
         # Actually, let's just clamp the step reward.
-        return max(0.0, min(1.0, reward))
+        return max(-1.0, min(1.0, reward))

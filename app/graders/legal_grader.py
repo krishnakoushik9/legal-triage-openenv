@@ -3,6 +3,25 @@ from typing import Dict, Any
 from app.models import Action
 import re
 
+def keyword_in_context(keyword, text, window=200):
+    import re
+    context_indicators = [
+        "because", "therefore", "pursuant", "under",
+        "violates", "requires", "held", "court",
+        "statute", "section", "provides"
+    ]
+    text_lower = text.lower()
+    keyword_lower = keyword.lower()
+    positions = [m.start() for m in 
+                 re.finditer(re.escape(keyword_lower), text_lower)]
+    if not positions:
+        return False
+    for pos in positions:
+        surrounding = text_lower[max(0, pos-window):pos+window]
+        if any(ind in surrounding for ind in context_indicators):
+            return True
+    return False
+
 class BaseGrader(abc.ABC):
     @abc.abstractmethod
     def grade(self, task: Dict[str, Any], history: list[Action]) -> float:
@@ -40,12 +59,12 @@ class LegalGrader(BaseGrader):
             jurisdiction = case.get("jurisdiction", "")
             if jurisdiction:
                 jurisdiction_words = [w for w in jurisdiction.replace(',', ' ').split() if len(w) > 3]
-                if any(w.lower() in full_response.lower() for w in jurisdiction_words):
+                if any(keyword_in_context(w, full_response) for w in jurisdiction_words):
                     score += 0.20
                     
             # urgency_assessed: 0.20
             urgency_words = ["low", "medium", "high", "critical", "urgent", "immediate"]
-            if any(w in full_response.lower() for w in urgency_words):
+            if any(keyword_in_context(w, full_response) for w in urgency_words):
                 score += 0.20
                 
             # reasoning_present: 0.10
@@ -64,7 +83,7 @@ class LegalGrader(BaseGrader):
             for stat in relevant_statutes:
                 # Basic matching: check if any significant part of the statute name is present
                 parts = stat.split()
-                if len(parts) > 1 and any(p.lower() in full_response.lower() for p in parts if len(p) > 3):
+                if len(parts) > 1 and any(keyword_in_context(p, full_response) for p in parts if len(p) > 3):
                     statute_cited = True
                     break
             if statute_cited:
@@ -75,7 +94,7 @@ class LegalGrader(BaseGrader):
             precedent_referenced = False
             for prec in prior_precedents:
                 prec_name = prec.split('(')[0].strip() # remove year for matching
-                if prec_name.lower() in full_response.lower():
+                if keyword_in_context(prec_name, full_response):
                     precedent_referenced = True
                     break
             if precedent_referenced:
@@ -84,7 +103,7 @@ class LegalGrader(BaseGrader):
             # facts_addressed: 0.20
             facts = case.get("facts", "")
             fact_words = [w for w in facts.split() if len(w) > 5]
-            matched_facts = sum(1 for w in fact_words if w.lower() in final_response.lower())
+            matched_facts = sum(1 for w in fact_words if keyword_in_context(w, final_response))
             if len(fact_words) > 0 and matched_facts >= 2:
                 score += 0.20
                 
@@ -104,7 +123,7 @@ class LegalGrader(BaseGrader):
             if expected_resolution_elements:
                 for e in expected_resolution_elements:
                     # Check if any significant word of the element is in the response
-                    if any(word.lower() in full_response.lower() for word in e.split() if len(word) > 4):
+                    if any(keyword_in_context(word, full_response) for word in e.split() if len(word) > 4):
                         matched_elements.append(e)
                 score += (len(matched_elements) / len(expected_resolution_elements)) * 0.40
                 
@@ -113,7 +132,7 @@ class LegalGrader(BaseGrader):
             statute_cited = False
             for stat in relevant_statutes:
                 parts = stat.split()
-                if len(parts) > 1 and any(p.lower() in full_response.lower() for p in parts if len(p) > 3):
+                if len(parts) > 1 and any(keyword_in_context(p, full_response) for p in parts if len(p) > 3):
                     statute_cited = True
                     break
             if statute_cited:
@@ -122,7 +141,7 @@ class LegalGrader(BaseGrader):
             # relief_addressed: 0.20
             relief_sought = case.get("relief_sought", "")
             relief_words = [w for w in relief_sought.split() if len(w) > 4]
-            if relief_words and any(w.lower() in final_response.lower() for w in relief_words):
+            if relief_words and any(keyword_in_context(w, final_response) for w in relief_words):
                 score += 0.20
                 
             # structured_format: 0.10
