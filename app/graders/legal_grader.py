@@ -66,7 +66,7 @@ class LegalGrader(BaseGrader):
                 score += 0.10
             
             raw_score = score * completion_multiplier * efficiency_multiplier
-            return round(max(0.05, min(0.95, raw_score)), 2)
+            return round(max(0.01, min(0.99, raw_score)), 2)
             
         elif task_type == "medium":
             score = 0.0
@@ -101,7 +101,7 @@ class LegalGrader(BaseGrader):
                 score += 0.05
                 
             raw_score = score * completion_multiplier * efficiency_multiplier
-            return round(max(0.05, min(0.95, raw_score)), 2)
+            return round(max(0.01, min(0.99, raw_score)), 2)
             
         elif task_type == "hard":
             score = 0.0
@@ -137,7 +137,7 @@ class LegalGrader(BaseGrader):
                 score += 0.10
                 
             raw_score = score * completion_multiplier * efficiency_multiplier
-            return round(max(0.05, min(0.95, raw_score)), 2)
+            return round(max(0.01, min(0.99, raw_score)), 2)
             
         return 0.05
 

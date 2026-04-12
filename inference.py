@@ -58,7 +58,7 @@ You must output your next action in the following JSON format:
                 obs = env.reset(task_id=task_id)
                 done = False
                 rewards_list = []
-                info = {"score": 0.0}
+                info = {"score": 0.01}
                 
                 # Print start line
                 print(f"[START] task={task_id} env=legal-triage-openenv model={MODEL_NAME}")
@@ -103,7 +103,7 @@ You must output your next action in the following JSON format:
                         reward = 0.0
                         done = True
                         error_msg = str(e)
-                        info = {"score": 0.0}
+                        info = {"score": 0.01}
                         
                     rewards_list.append(reward)
                     done_str = "true" if done else "false"
@@ -113,8 +113,8 @@ You must output your next action in the following JSON format:
                     if done:
                         break
                         
-                success = "true" if info.get("score", 0.0) >= 0.5 else "false"
-                score = info.get("score", 0.0)
+                success = "true" if info.get("score", 0.01) >= 0.5 else "false"
+                score = info.get("score", 0.01)
                 steps_taken = len(rewards_list)
                 rewards_str = ",".join(f"{r:.2f}" for r in rewards_list)
                 
@@ -122,7 +122,7 @@ You must output your next action in the following JSON format:
             
             except Exception as e:
                 print(f"[START] task={task_id} env=legal-triage-openenv model={MODEL_NAME}")
-                print(f"[END] success=false steps=0 score=0.00 rewards= error={str(e)}")
+                print(f"[END] success=false steps=0 score=0.01 rewards= error={str(e)}")
 
         print("All tasks complete", file=sys.stderr)
 

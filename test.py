@@ -32,10 +32,10 @@ def run_tests():
 
         results[task_id] = {
             "total_reward": total_reward,
-            "score": info.get("score", 0),
+            "score": info.get("score", 0.01),
             "steps": env.current_step
         }
-        print(f"Task {task_id} completed. Score: {info.get('score', 0)}")
+        print(f"Task {task_id} completed. Score: {info.get('score', 0.01)}")
 
     print("\n--- Test Results ---")
     print(json.dumps(results, indent=2))
