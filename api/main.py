@@ -24,27 +24,12 @@ app.add_middleware(
 class ResetRequest(BaseModel):
     task_id: Optional[str] = None
 
-@app.middleware("http")
-async def limit_request_size(request: Request, call_next):
-    content_length = request.headers.get("content-length")
-    if content_length and int(content_length) > 10240:
-        return JSONResponse({"error": "Request too large"}, status_code=413)
-    return await call_next(request)
-
-@app.get("/")
-def root():
-    return {"message": "Legal Triage OpenEnv is running", "status": "ok"}
-
-@app.get("/health")
-def health():
-    return {"status": "ok", "environment": "legal-triage-openenv"}
-
 @app.post("/reset")
-def reset(request: Optional[ResetRequest] = None):
+def reset(request: Optional[ResetRequest] = None, task_id: Optional[str] = None):
     try:
-        task_id = request.task_id if request else None
-        obs = env.reset(task_id=task_id)
-        return obs
+        t_id = task_id or (request.task_id if request else None)
+        obs = env.reset(task_id=t_id)
+        return obs.dict()
     except Exception as e:
         logging.error(f"Error in /reset: {e}")
         raise HTTPException(status_code=500, detail="Internal environment error")
@@ -52,9 +37,10 @@ def reset(request: Optional[ResetRequest] = None):
 @app.post("/step")
 def step(action: Dict[str, Any]):
     try:
+        # Action model handles validation
         obs, reward, done, info = env.step(action)
         return {
-            "observation": obs,
+            "observation": obs.dict(),
             "reward": reward,
             "done": done,
             "info": info
@@ -65,9 +51,9 @@ def step(action: Dict[str, Any]):
 
 @app.get("/state")
 def get_state():
-    """Returns the current environment state without advancing the episode."""
+    """Returns the current environment observation without advancing the episode."""
     try:
-        return env.state()
+        return env._get_observation().dict()
     except Exception as e:
         logging.error(f"Error in /state: {e}")
         raise HTTPException(status_code=500, detail="Internal environment error")

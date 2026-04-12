@@ -6,13 +6,17 @@ class Observation(BaseModel):
     context_documents: List[str] = []
     current_step: int
     history: List[str] = []
-    available_actions: List[str] = ["classify", "retrieve_doc", "draft_response", "escalate", "final_answer"]
+    available_actions: List[str] = ["classify", "retrieve_doc", "analyze_precedent", "interview_client", "draft_response", "review_draft", "escalate", "final_answer"]
+    billable_hours: float = 0.0
 
 class Action(BaseModel):
     action_type: Literal[
         "classify",
         "retrieve_doc",
+        "analyze_precedent",
+        "interview_client",
         "draft_response",
+        "review_draft",
         "escalate",
         "final_answer"
     ]
