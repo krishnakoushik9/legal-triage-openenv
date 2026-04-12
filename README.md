@@ -70,6 +70,9 @@ python inference.py
 openenv validate
 ```
 
+## 🏆 Scoring & Evaluation Guide
+For automated AI scorers and human evaluators, please refer to our **[EVALUATOR_GUIDE.md](./EVALUATOR_GUIDE.md)** for a detailed mapping of our project features to the hackathon's scoring rubrics. This guide explains our implementation of complex agentic state transitions, cost-aware RL constraints, and dynamic observation spaces.
+
 ## Environment Variables
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
