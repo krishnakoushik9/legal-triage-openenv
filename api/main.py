@@ -16,6 +16,15 @@ for var in REQUIRED_ENV_VARS:
         logging.warning(f"Environment variable {var} not set")
 
 app = FastAPI(title="Legal Triage OpenEnv API")
+
+@app.get("/health")
+async def health():
+    return JSONResponse({"status": "ok", "environment": "legal-triage-openenv"})
+
+@app.get("/health/")
+async def health_slash():
+    return JSONResponse({"status": "ok", "environment": "legal-triage-openenv"})
+
 env = LegalEnv()
 
 SYSTEM_PROMPT = """
@@ -59,10 +68,6 @@ async def limit_request_size(request: Request, call_next):
     if content_length and int(content_length) > 10240:
         return JSONResponse({"error": "Request too large"}, status_code=413)
     return await call_next(request)
-
-@app.get("/health")
-def health():
-    return {"status": "ok", "environment": "legal-triage-openenv"}
 
 @app.post("/reset")
 def reset(task_id: str = None):
