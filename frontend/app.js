@@ -239,5 +239,48 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('auto-run-btn').addEventListener('click', runAutoInference);
     downloadBtn.addEventListener('click', downloadPDF);
 
+    initChart();
+    console.log("LEGAL TRIAGE // SYSTEM ONLINE");
+});
+dEventListener('click', downloadPDF);
+
+    console.log("LEGAL TRIAGE // SYSTEM ONLINE");
+});
+) {
+                doc.addPage();
+                yPos = 20;
+            }
+            const text = `[STEP ${(i+1).toString().padStart(2, '0')}] ${step}`;
+            const splitStep = doc.splitTextToSize(text, 170);
+            doc.text(splitStep, 20, yPos);
+            yPos += (splitStep.length * 5) + 2;
+        });
+        
+        // Final Results
+        yPos += 10;
+        if (yPos > 250) { doc.addPage(); yPos = 20; }
+        
+        doc.setFillColor(...orange);
+        doc.rect(20, yPos, 170, 20, 'F');
+        doc.setTextColor(...black);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.text(`TOTAL REWARD SCORE: ${totalReward.toFixed(2)}`, 30, yPos + 12);
+        
+        // Footer
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text("CONFIDENTIAL // FOR RL RESEARCH PURPOSES ONLY", 105, 285, { align: "center" });
+        
+        doc.save(`legal-triage-report-${Date.now()}.pdf`);
+    }
+
+    // Attach Event Listeners
+    document.getElementById('save-token-btn').addEventListener('click', saveToken);
+    document.getElementById('reset-btn').addEventListener('click', resetEnv);
+    document.getElementById('step-btn').addEventListener('click', stepEnv);
+    document.getElementById('auto-run-btn').addEventListener('click', runAutoInference);
+    downloadBtn.addEventListener('click', downloadPDF);
+
     console.log("LEGAL TRIAGE // SYSTEM ONLINE");
 });

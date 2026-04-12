@@ -21,7 +21,10 @@ Your goal is to solve the user's legal issue step-by-step using the provided env
 Available Actions:
 - classify: Categorize the query (e.g., civil_dispute, criminal, contract, tort, IP, employment, privacy, corporate, family).
 - retrieve_doc: Get relevant legal snippets from the knowledge base.
+- analyze_precedent: Perform a deep dive into the retrieved legal precedents to find specific rulings.
+- interview_client: Ask the client for more specific details or hidden facts about the case.
 - draft_response: Prepare a draft of the legal advice.
+- review_draft: Submit your draft to a senior partner for review to ensure it meets all required elements.
 - escalate: Use for complex cases that need higher authority (primarily for hard tasks).
 - final_answer: Provide the final structured resolution to the user.
 
@@ -45,7 +48,7 @@ You must output your next action in the following JSON format:
 def run_inference():
     env = LegalEnv()
     tasks = ["easy", "medium", "hard"]
-    MAX_STEPS = 8
+    MAX_STEPS = 12
     
     for task_name in tasks:
         task_id = f"{task_name}_task"
@@ -55,7 +58,7 @@ def run_inference():
             rewards_list = []
             
             # Print start line
-            print(f"[START] task={task_name} env=legal_triage model={MODEL_NAME}")
+            print(f"[START] task={task_id} env=legal-triage-openenv model={MODEL_NAME}")
             
             for step_n in range(1, MAX_STEPS + 1):
                 messages = [
@@ -79,7 +82,7 @@ def run_inference():
                 except Exception as e:
                     action_dict = {"action_type": "draft_response", "content": "Fallback action due to LLM error"}
 
-                action_str = json.dumps(action_dict).replace('"', '\\"')
+                action_str = json.dumps(action_dict)
                 
                 try:
                     obs, reward, done, info = env.step(action_dict)
@@ -98,15 +101,15 @@ def run_inference():
                 if done:
                     break
                     
-            success = "true" if info.get("score", 0.0) > 0.0 else "false"
+            success = "true" if info.get("score", 0.0) >= 0.5 else "false"
             score = info.get("score", 0.0)
             steps_taken = len(rewards_list)
             rewards_str = ",".join(f"{r:.2f}" for r in rewards_list)
             
             print(f"[END] success={success} steps={steps_taken} score={score:.2f} rewards={rewards_str}")
-            
+        
         except Exception as e:
-            print(f"[START] task={task_name} env=legal_triage model={MODEL_NAME}")
+            print(f"[START] task={task_id} env=legal-triage-openenv model={MODEL_NAME}")
             print(f"[END] success=false steps=0 score=0.00 rewards= error={str(e)}")
 
     print("All tasks complete", file=sys.stderr)

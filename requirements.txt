@@ -5,3 +5,7 @@ numpy
 openai
 python-dotenv
 jinja2
+requests
+httpx
+python-multipart
+anyio
